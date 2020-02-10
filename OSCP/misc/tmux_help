@@ -1,0 +1,28 @@
+command+a = prefix (pr)
+
+tmux ls	= show sessions
+tmux attach -t TARGET	= detatch window
+
+pr+c	= new window
+pr+#	= switch window
+pr+,	= rename window
+pr+s	= send pane to window #
+pr+j	= join pane to window #
+pr+[	= edit mode
+   ?	= search from top
+   /	= search from bottom
+   <spacebar>	= copy mode
+   <enter>	= saves to buffer
+pr+]	= paste
+pr+alt+shift+p	= saves pane to logfile
+
+pr+|	= vertical split
+pr+-	= horizontal split
+   pr+<arrow key>	= moves between splits
+
+--- Resizing Panes
+pr+H	= left
+pr+J	= down
+pr+K	= up
+pr+L	= right
+
