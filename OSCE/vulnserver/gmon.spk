@@ -1,0 +1,4 @@
+s_string("GMON");
+s_string(" ");
+s_string_variable("test");
+s_string("\r\n");

